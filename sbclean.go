@@ -112,8 +112,8 @@ func (e *encoder) Close() os.Error {
 	// If there's anything left in the buffer, flush it out
 	if e.err == nil && e.nbuf > 0 {
 		Encode(e.out[0:], e.buf[0:e.nbuf])
+		_, e.err = e.w.Write(e.out[0 : e.nbuf+1])
 		e.nbuf = 0
-		_, e.err = e.w.Write(e.out[0:4])
 	}
 	return e.err
 }
@@ -156,10 +156,18 @@ func Decode(dst, src []byte) (n int, err os.Error) {
 	for len(src) > 7 {
 
 		accu = src[7]
+		if (accu & 0x80) > 0 {
+			return 0, CorruptInputError(n)
+		}
 		for index = 6; index >= 0; index-- {
+			if (src[index] & 0x80) > 0 {
+				return 0, CorruptInputError(n)
+			}
+
 			dst[index] = src[index] << 1
 			dst[index] |= accu & 1
 			accu >>= 1
+			n++
 		}
 		src = src[8:]
 		dst = dst[7:]
@@ -167,10 +175,17 @@ func Decode(dst, src []byte) (n int, err os.Error) {
 
 	if len(src) > 0 {
 		accu = src[len(src)-1]
-		for index = len(src) - 1; index >= 0; index-- {
+		if (accu & 0x80) > 0 {
+			return 0, CorruptInputError(n)
+		}
+		for index = len(src) - 2; index >= 0; index-- {
+			if (src[index] & 0x80) > 0 {
+				return 0, CorruptInputError(n)
+			}
 			dst[index] = src[index] << 1
-			dst[index] |= accu & 1
 			accu >>= 1
+			dst[index] |= accu & 1
+			n++
 		}
 	}
 
@@ -200,17 +215,14 @@ func (d *decoder) Read(p []byte) (n int, err os.Error) {
 
 	// Read a chunk.
 	nn := len(p) / 7 * 8
-	if nn < 8 {
-		nn = 8
-	}
 	if nn > len(d.buf) {
 		nn = len(d.buf)
 	}
-	nn, d.err = io.ReadAtLeast(d.r, d.buf[d.nbuf:nn], 8-d.nbuf)
-	d.nbuf += nn
-	if d.nbuf < 8 {
+	nn, d.err = io.ReadFull(d.r, d.buf[d.nbuf:nn])
+	if d.err != nil && d.err != io.ErrUnexpectedEOF {
 		return 0, d.err
 	}
+	d.nbuf += nn
 
 	// Decode chunk into p, or d.out and then p if p is too small.
 	nr := d.nbuf
