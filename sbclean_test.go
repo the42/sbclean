@@ -21,22 +21,26 @@ var files = []string{"test.dat", "test1.dat", "test2.dat"}
 func TestSbencodeDecodefromExtFile(t *testing.T) {
 
 	for _, filename := range files {
+	  
 		f, err1 := os.Open(filename, os.O_RDONLY, 0666)
+		
 		if err1 != nil {
 			t.Fatalf("Error opening file %s: %s", filename, err1)
 		}
+		
 		defer f.Close()
 
 		readdata, err := ioutil.ReadAll(f)
+		
 		if err != nil {
-			t.Fatalf("Error reading file: %s", err)
+			t.Fatalf("Error reading file %s: %s", filename, err)
 		}
 
 		buffer1 := bytes.NewBuffer(nil)
 		buffer2 := bytes.NewBuffer(nil)
 
 		if err != nil {
-			t.Fatalf("Error encoding: %s", err)
+			t.Fatalf("Error encoding %s: %s", filename, err)
 		}
 
 		enc := NewEncoder(buffer1)
@@ -45,8 +49,9 @@ func TestSbencodeDecodefromExtFile(t *testing.T) {
 
 		dec := NewDecoder(buffer1)
 		_, err = io.Copy(buffer2, dec)
+		
 		if err != nil {
-			t.Fatalf("Error decoding: %s", err)
+			t.Fatalf("Error decoding %s: %s", filename, err)
 		}
 
 		if bytes.Compare(readdata, buffer2.Bytes()) != 0 {
