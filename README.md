@@ -20,7 +20,7 @@ Features
 The package provides the following functionality:
 
 * Encode / Decode byte strings into eight bit clean byte sequences.
-* Read / Write interface for stream operations (cf. [Go encoding
+* Read / Write interface for stream operations, cf. [Go encoding
 packages](http://golang.org/pkg/encoding/)
 
 Installation
