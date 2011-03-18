@@ -27,7 +27,7 @@ func main() {
 	if helpsi || encode && decode {
 		fmt.Println("\Eight bit encoder\n")
 		fmt.Println("Usage: sbenc [-e|-d] for encode or decode of eight bit clean data")
-		fmt.Println("\t-t prints this help")
+		fmt.Println("\t-h prints this help")
 		os.Exit(1)
 	}
 
