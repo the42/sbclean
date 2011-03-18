@@ -2,7 +2,7 @@
 // Use of this source code is governed by a Modified BSD License
 // that can be found in the LICENSE file.
 
-// Seven bit clean encode or decode data. Operates on stdin and stdout.
+// Eight bit clean encode or decode data. Operates on stdin and stdout.
 package main
 
 import (
@@ -18,15 +18,15 @@ func main() {
 
 	var encode, decode, helpsi bool
 
-	flag.BoolVar(&encode, "e", false, "seven bit encode stdin to stdout. default")
-	flag.BoolVar(&decode, "d", false, "seven bit decode stdin to stdout")
+	flag.BoolVar(&encode, "e", false, "eight bit clean encode stdin to stdout. default")
+	flag.BoolVar(&decode, "d", false, "decode previously encoded data from stdin to stdout")
 	flag.BoolVar(&helpsi, "h", false, "print this help screen")
 
 	flag.Parse()
 
 	if helpsi || encode && decode {
-		fmt.Println("\nSeven bit encoder\n")
-		fmt.Println("Usage: sbencode [-e|-d] for encode or decode of seven bit clean data")
+		fmt.Println("\Eight bit encoder\n")
+		fmt.Println("Usage: sbenc [-e|-d] for encode or decode of eight bit clean data")
 		fmt.Println("\t-t prints this help")
 		os.Exit(1)
 	}
