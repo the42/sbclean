@@ -215,7 +215,7 @@ func (d *decoder) Read(p []byte) (n int, err os.Error) {
 	if nn > len(d.buf) {
 		nn = len(d.buf)
 	}
-	
+
 	// Eight bit clean encoding has no padding; We will read past the end, in which case ErrUnexpectedEOF is not an error
 	nn, d.err = io.ReadFull(d.r, d.buf[d.nbuf:nn])
 	if d.err != nil && d.err != io.ErrUnexpectedEOF {
