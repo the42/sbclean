@@ -4,8 +4,9 @@
 
 //target:github.com/the42/encoding/sbclean
 
-// This package provides a series of functions to deal with 
-// conversion, transformation and projection of coordinate systems.
+// sbclean is a package which provides functionality to
+//  * encode arbitrary code points into eight bit clean code points
+//  * decode previously encoded chunks into originating format
 package sbclean
 
 import (
