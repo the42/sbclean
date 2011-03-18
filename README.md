@@ -1,4 +1,4 @@
-sbclean - seven bite clean encoding
+sbclean - eight bit clean encoding
 ===================================
 
 sbclean is a package which provides functionality to
