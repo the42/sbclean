@@ -19,7 +19,7 @@ import (
  */
 
 // Encode encodes src by removing every most significant bit from every byte
-// and appending the accumulating information every seventh byte  
+// and appending the accumulating information every eight byte  
 // Encode encodes EncodedLen(len(src)) bytes to dst.
 func Encode(dst, src []byte) {
 
@@ -118,14 +118,14 @@ func (e *encoder) Close() os.Error {
 	return e.err
 }
 
-// seven bit clean encoding operates in 8-byte blocks; when finished
+// Eight bit clean encoding operates in 8-byte blocks; when finished
 // writing, the caller must Close the returned encoder to flush any
 // partially written blocks.
 func NewEncoder(w io.Writer) io.WriteCloser {
 	return &encoder{w: w}
 }
 
-// EncodedLen returns the length in bytes of the seven bit clean encoding
+// EncodedLen returns the length in bytes of the eight bit clean encoding
 // of an input buffer of length n.
 func EncodedLen(n int) int {
 	if n%7 == 0 {
@@ -144,10 +144,6 @@ func (e CorruptInputError) String() string {
 	return "expected 8 bit clean data byte but most significant bit is set at " + strconv.Itoa64(int64(e))
 }
 
-// decode is like Decode but returns an additional 'end' value, which
-// indicates if end-of-message padding was encountered and thus any
-// additional data is an error.  decode also assumes len(src)%4==0,
-// since it is meant for internal use.
 func Decode(dst, src []byte) (n int, err os.Error) {
 
 	var accu byte
@@ -218,6 +214,8 @@ func (d *decoder) Read(p []byte) (n int, err os.Error) {
 	if nn > len(d.buf) {
 		nn = len(d.buf)
 	}
+	
+	// Eight bit clean encoding has no padding; We will read past the end, in which case ErrUnexpectedEOF is not an error
 	nn, d.err = io.ReadFull(d.r, d.buf[d.nbuf:nn])
 	if d.err != nil && d.err != io.ErrUnexpectedEOF {
 		return 0, d.err
@@ -246,13 +244,13 @@ func (d *decoder) Read(p []byte) (n int, err os.Error) {
 	return n, d.err
 }
 
-// NewDecoder constructs a new seven bit clean stream decoder.
+// NewDecoder constructs a new eight bit clean stream decoder.
 func NewDecoder(r io.Reader) io.Reader {
 	return &decoder{r: r}
 }
 
 // DecodedLen returns the maximum length in bytes of the decoded data
-// corresponding to n bytes of seven bit clean encoded data.
+// corresponding to n bytes of eight bit clean encoded data.
 func DecodedLen(n int) int {
 	return n * 7 / 8
 }
