@@ -22,7 +22,7 @@ func TestSbencodeDecodefromExtFile(t *testing.T) {
 
 	for _, filename := range files {
 
-		f, err1 := os.Open(filename, os.O_RDONLY, 0666)
+		f, err1 := os.Open(filename)
 
 		if err1 != nil {
 			t.Fatalf("Error opening file %s: %s", filename, err1)
