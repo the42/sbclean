@@ -13,7 +13,6 @@ import (
 	"io"
 )
 
-
 func main() {
 
 	var encode, decode, helpsi bool
@@ -35,7 +34,7 @@ func main() {
 		encode = true
 	}
 
-	var err os.Error
+	var err error
 
 	if encode {
 		encoder := sbclean.NewEncoder(os.Stdout)

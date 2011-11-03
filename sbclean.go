@@ -11,7 +11,6 @@ package sbclean
 
 import (
 	"io"
-	"os"
 	"strconv"
 )
 
@@ -50,14 +49,14 @@ func Encode(dst, src []byte) {
 }
 
 type encoder struct {
-	err  os.Error
+	err  error
 	w    io.Writer
 	buf  [7]byte    // buffered data waiting to be encoded
 	nbuf int        // number of bytes in buf
 	out  [1024]byte // output buffer
 }
 
-func (e *encoder) Write(p []byte) (n int, err os.Error) {
+func (e *encoder) Write(p []byte) (n int, err error) {
 	if e.err != nil {
 		return 0, e.err
 	}
@@ -109,7 +108,7 @@ func (e *encoder) Write(p []byte) (n int, err os.Error) {
 
 // Close flushes any pending output from the encoder.
 // It is an error to call Write after calling Close.
-func (e *encoder) Close() os.Error {
+func (e *encoder) Close() error {
 	// If there's anything left in the buffer, flush it out
 	if e.err == nil && e.nbuf > 0 {
 		Encode(e.out[0:], e.buf[0:e.nbuf])
@@ -141,11 +140,11 @@ func EncodedLen(n int) int {
 
 type CorruptInputError int64
 
-func (e CorruptInputError) String() string {
+func (e CorruptInputError) Error() string {
 	return "expected 8 bit clean data byte but most significant bit is set at " + strconv.Itoa64(int64(e))
 }
 
-func Decode(dst, src []byte) (n int, err os.Error) {
+func Decode(dst, src []byte) (n int, err error) {
 
 	var accu byte
 	var index int
@@ -190,7 +189,7 @@ func Decode(dst, src []byte) (n int, err os.Error) {
 }
 
 type decoder struct {
-	err    os.Error
+	err    error
 	r      io.Reader
 	buf    [1024]byte // leftover input
 	nbuf   int
@@ -198,7 +197,7 @@ type decoder struct {
 	outbuf [1024 / 8 * 7]byte
 }
 
-func (d *decoder) Read(p []byte) (n int, err os.Error) {
+func (d *decoder) Read(p []byte) (n int, err error) {
 	if d.err != nil {
 		return 0, d.err
 	}
