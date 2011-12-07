@@ -141,7 +141,7 @@ func EncodedLen(n int) int {
 type CorruptInputError int64
 
 func (e CorruptInputError) Error() string {
-	return "expected 8 bit clean data byte but most significant bit is set at " + strconv.Itoa64(int64(e))
+	return "expected 8 bit clean data byte but most significant bit is set at " + strconv.FormatInt(int64(e), 10)
 }
 
 func Decode(dst, src []byte) (n int, err error) {
