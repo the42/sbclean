@@ -8,7 +8,7 @@ package main
 import (
 	"fmt"
 	"flag"
-	"github.com/the42/encoding/sbclean"
+	"github.com/the42/sbclean"
 	"os"
 	"io"
 )

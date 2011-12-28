@@ -2,8 +2,6 @@
 // Use of this source code is governed by a Modified BSD License
 // that can be found in the LICENSE file.
 
-//target:github.com/the42/encoding/sbclean
-
 // sbclean is a package which provides functionality to
 //  * encode arbitrary code points into eight bit clean code points
 //  * decode previously encoded chunks into originating format

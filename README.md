@@ -26,12 +26,7 @@ packages](http://golang.org/pkg/encoding/)
 Installation
 ------------
 
-  goinstall github.com/the42/sbclean
-
-or alternatively download the package as a tar file, extract the files into an
-empty directory and run
-
-  make install
+  go install github.com/the42/sbclean
 
 License
 -------
@@ -64,4 +59,4 @@ Testing
 
 To run the tests:
 
-  make test
+  go test github.com/the42/sbclean
